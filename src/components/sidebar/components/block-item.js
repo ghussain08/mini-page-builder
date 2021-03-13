@@ -1,10 +1,17 @@
 import React from "react";
+import { getMousePosition } from "../../../util";
 
 function BlockItem(props) {
     const { block } = props;
-    function onDragStart(ev) {
-        ev.dataTransfer.setData("data", JSON.stringify({ ...block }));
+
+    function onDragStart(e) {
+        const { x, y } = getMousePosition(e);
+        e.dataTransfer.setData(
+            "data",
+            JSON.stringify({ ...block, offsetX: x, offsetY: y })
+        );
     }
+
     return (
         <div
             onDragStart={onDragStart}
@@ -12,7 +19,7 @@ function BlockItem(props) {
             className="sidebar__item"
             key={block.type}
         >
-            {block.name}
+            {block.text}
         </div>
     );
 }

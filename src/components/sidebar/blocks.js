@@ -1,21 +1,15 @@
 const BLOCK_ITEMS = [
     {
         type: "label",
-        name: "Label",
+        text: "Label",
     },
     {
         type: "input",
-        name: "Input",
-        prop: {
-            type: "text",
-        },
+        text: "Input",
     },
     {
         type: "button",
-        name: "Button",
-        prop: {
-            type: "button",
-        },
+        text: "Button",
     },
 ];
 export default BLOCK_ITEMS;

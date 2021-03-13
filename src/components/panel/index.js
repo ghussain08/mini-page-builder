@@ -2,56 +2,87 @@ import React, { Component } from "react";
 import Input from "./components/input";
 import Label from "./components/label";
 import Button from "./components/button";
+import { getMousePosition } from "../../util";
+
+const COMPONENT_MAPPING = {
+    input: Input,
+    label: Label,
+    button: Button,
+};
+
 class Panel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: [],
+            elements: {},
         };
     }
 
-    onDrageOver = (ev) => {
-        ev.preventDefault();
-        ev.dataTransfer.dropEffect = "move";
+    onDrageOver = (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
     };
 
-    onDragStart = (ev) => {
-        const id = ev.target.dataset.id;
-        const data = {
-            ...this.state.items.find((item) => item.id === parseInt(id)),
+    /**
+     * This handles the repositioning of the elements
+     * @param {*} e
+     */
+    onDragStart = (e) => {
+        // get the id of element
+        const id = e.target.dataset.id;
+        const { x, y } = getMousePosition(e);
+        // get the data of the dragged element
+        const data = { ...this.state.elements[id] };
+
+        e.dataTransfer.setData(
+            "data",
+            JSON.stringify({ ...data, offsetX: x, offsetY: y })
+        );
+    };
+
+    onDrop = (e) => {
+        e.preventDefault();
+        const data = JSON.parse(e.dataTransfer.getData("data"));
+        const { offsetX, offsetY, id } = data;
+
+        // get the mouse position at the moment
+        const { clientX, clientY } = e;
+
+        // shallow copy elements object
+        const elements = { ...this.state.elements };
+
+        // if elements already has then it means it is being re-positioned
+        // instead of drop
+        const elId = id || Date.now();
+
+        // add updated/new elements to the state
+        elements[elId] = {
+            ...data,
+            id: elId,
+            // we need to remove offsetX from mouse position
+            // because element's left and top might not be mouse left and top
+            x: clientX - parseInt(offsetX),
+            y: clientY - parseInt(offsetY),
         };
-        ev.dataTransfer.setData("data", JSON.stringify(data));
+        this.setState({ elements });
     };
 
-    onDrop = (ev) => {
-        console.log(ev);
-        ev.preventDefault();
-        // Get the id of the target and add the moved element to the target's DOM
-        const data = JSON.parse(ev.dataTransfer.getData("data"));
-        const { clientX, clientY } = ev;
-        const items = [...this.state.items];
-        const itemIndex = items.findIndex(
-            (item) => item.id === parseInt(data.id)
-        );
-        if (itemIndex > -1) {
-            items[itemIndex] = { ...items[itemIndex], x: clientX, y: clientY };
-            this.setState({ items });
-            return;
-        }
-        items.push({
-            data,
-            id: Date.now(),
-            x: clientX,
-            y: clientY,
-        });
-        this.setState({ items });
+    getComponent = (item) => {
+        const Component = COMPONENT_MAPPING[item.type] || null;
+        return Component ? (
+            <Component
+                key={item.id}
+                item={item}
+                onDragStart={this.onDragStart}
+            />
+        ) : null;
     };
 
-    isForeignItem = (id) => {
-        const itemIndex = this.state.items.findIndex(
-            (item) => item.id === parseInt(id)
+    renderElements = () => {
+        const { elements } = this.state;
+        return Object.keys(elements).map((elId) =>
+            this.getComponent(elements[elId])
         );
-        return itemIndex > -1;
     };
 
     render() {
@@ -61,28 +92,9 @@ class Panel extends Component {
                 onDrop={this.onDrop}
                 className="panel"
             >
-                {this.state.items.map((item) => {
-                    console.log(item);
-                    const Component =
-                        COMPONENT_TYPE_MAPPING[item.data.type] || null;
-                    return (
-                        <Component
-                            item={item}
-                            onDragStart={this.onDragStart}
-                            data-id={item.id}
-                            draggable={"true"}
-                            style={{ top: item.y, left: item.x }}
-                        />
-                    );
-                })}
+                {this.renderElements()}
             </section>
         );
     }
 }
 export default Panel;
-
-const COMPONENT_TYPE_MAPPING = {
-    input: Input,
-    label: Label,
-    button: Button,
-};
