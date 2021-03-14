@@ -36,14 +36,17 @@ class Panel extends Component {
 
         e.dataTransfer.setData(
             "data",
-            JSON.stringify({ ...data, offsetX: x, offsetY: y })
+            JSON.stringify({
+                ...data,
+                style: { ...data.style, offsetX: x, offsetY: y },
+            })
         );
     };
 
     onDrop = (e) => {
         e.preventDefault();
         const data = JSON.parse(e.dataTransfer.getData("data"));
-        const { offsetX, offsetY, id } = data;
+        const { id, style } = data;
 
         // get the mouse position at the moment
         const { clientX, clientY } = e;
@@ -59,10 +62,13 @@ class Panel extends Component {
         elements[elId] = {
             ...data,
             id: elId,
+            style: {
+                ...style,
+                left: parseInt(clientX - parseInt(style.offsetX)),
+                top: parseInt(clientY - parseInt(style.offsetY)),
+            },
             // we need to remove offsetX from mouse position
             // because element's left and top might not be mouse left and top
-            x: clientX - parseInt(offsetX),
-            y: clientY - parseInt(offsetY),
         };
         this.setState({ elements });
     };

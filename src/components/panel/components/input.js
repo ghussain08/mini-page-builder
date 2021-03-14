@@ -4,7 +4,7 @@ function Input(props) {
     return (
         <input
             onDragStart={props.onDragStart}
-            style={{ top: props.item.y, left: props.item.x }}
+            style={props.item.style}
             draggable
             data-id={props.item.id}
         />

@@ -8,7 +8,10 @@ function BlockItem(props) {
         const { x, y } = getMousePosition(e);
         e.dataTransfer.setData(
             "data",
-            JSON.stringify({ ...block, offsetX: x, offsetY: y })
+            JSON.stringify({
+                ...block,
+                style: { ...block.style, offsetX: x, offsetY: y },
+            })
         );
     }
 

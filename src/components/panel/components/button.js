@@ -1,10 +1,11 @@
 import React from "react";
 
 function Button(props) {
+    console.log(props);
     return (
         <button
+            style={props.item.style}
             onDragStart={props.onDragStart}
-            style={{ top: props.item.y, left: props.item.x }}
             draggable
             data-id={props.item.id}
         >
