@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import Modal from "../../modal";
 
+/**
+ * @author Gulam Hussain 14 March 2021
+ * Block property update modal
+ */
 class PropertyModal extends Component {
     constructor(props) {
         super(props);
@@ -13,6 +17,7 @@ class PropertyModal extends Component {
         const { style } = this.props.block;
         const updatedStyle = {};
         Object.keys(style).forEach((property) => {
+            // parseFlot will remove any appended strings
             updatedStyle[property] = parseFloat(style[property]);
         });
         return updatedStyle;

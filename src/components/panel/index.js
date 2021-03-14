@@ -38,6 +38,7 @@ class Panel extends Component {
         // get the data of the dragged element
         const data = { ...this.state.elements[id] };
 
+        //set datatransfer properties
         e.dataTransfer.setData(
             "data",
             JSON.stringify({
@@ -54,6 +55,7 @@ class Panel extends Component {
     // Handler droping and repositioning of the blocks
     onDrop = (e) => {
         e.preventDefault();
+        // get and parse stringified data
         const data = JSON.parse(e.dataTransfer.getData("data"));
         const { id, style } = data;
 
@@ -79,8 +81,12 @@ class Panel extends Component {
                 top: parseInt(clientY - parseInt(style.offsetY)),
             },
         };
+
+        // if id is undefined it means element is being droped to dropzone
+        // and in that case open property configuration modal
         this.setState({ elements }, () => !id && this.openPropertyModal(elId));
 
+        // persist state
         this.persistState(elements);
     };
 
@@ -101,16 +107,18 @@ class Panel extends Component {
     onKeyUp = (e) => {
         const id = e.target.dataset.id;
         if (e.keyCode === 13) {
+            // user pressed Enter Key
             this.openPropertyModal(id);
             return;
         }
         if (e.keyCode === 8) {
+            // user pressed DELETE key
             this.onDelete(id);
             return;
         }
     };
 
-    // open property modal, either on Press Enter or when element get droped
+    // open property modal, either on Press Enter or when element gets droped
     openPropertyModal = (blockId) => {
         const block = { ...this.state.elements[blockId] };
         this.setState({ isModalOpen: true, modalBlock: block });
@@ -122,10 +130,13 @@ class Panel extends Component {
 
     // Fires when user click on save changes button in Modal
     onPropertiesUpdate = (updatedBlock) => {
-        console.log(updatedBlock);
+        // shallow copy block element
         const elements = { ...this.state.elements };
+
+        // replace existing block properties with updated ones
         elements[updatedBlock.id] = { ...updatedBlock };
         this.setState({ elements });
+        // persisit state in local storage
         this.persistState(elements);
     };
 
@@ -140,7 +151,10 @@ class Panel extends Component {
     // user selects a element and click on DELETE key
     onDelete = (blockId) => {
         const elements = { ...this.state.elements };
+        // delete element from elements object
         delete elements[blockId];
+
+        // persist state
         this.setState({ elements });
         this.persistState(elements);
     };
