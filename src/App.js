@@ -2,13 +2,17 @@ import React from "react";
 import "./styles/bundle.sass";
 import Panel from "./components/panel";
 import Sidebar from "./components/sidebar";
-import Modal from "./components/modal";
+
+/**
+ * @author Gulam Hussain 14 March 2021
+ * @description App UI entrypoint
+ */
 function App() {
     return (
         <div className="container">
-            {/* <Modal divider /> */}
-
+            {/* Drop zone */}
             <Panel />
+            {/* Drag Zone */}
             <Sidebar />
         </div>
     );

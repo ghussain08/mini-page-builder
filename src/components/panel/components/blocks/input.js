@@ -3,10 +3,11 @@ import React from "react";
 function Input(props) {
     return (
         <input
+            onKeyUp={props.onKeyUp}
             onDragStart={props.onDragStart}
-            style={props.item.style}
+            style={props.block.style}
             draggable
-            data-id={props.item.id}
+            data-id={props.block.id}
         />
     );
 }

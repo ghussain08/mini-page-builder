@@ -1,15 +1,15 @@
 import React from "react";
 
 function Button(props) {
-    console.log(props);
     return (
         <button
-            style={props.item.style}
+            onKeyUp={props.onKeyUp}
+            style={props.block.style}
             onDragStart={props.onDragStart}
             draggable
-            data-id={props.item.id}
+            data-id={props.block.id}
         >
-            Button
+            {props.block.text}
         </button>
     );
 }
