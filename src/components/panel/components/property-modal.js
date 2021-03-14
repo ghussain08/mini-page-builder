@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Modal from "../../modal";
+
 class PropertyModal extends Component {
     constructor(props) {
         super(props);

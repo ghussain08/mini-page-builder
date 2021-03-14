@@ -4,6 +4,7 @@ import Label from "./components/blocks/label";
 import Button from "./components/blocks/button";
 import { getMousePosition } from "../../util";
 import PropertyModal from "./components/property-modal";
+
 const COMPONENT_MAPPING = {
     input: Input,
     label: Label,
